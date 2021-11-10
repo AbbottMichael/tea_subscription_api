@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Customer do
-  describe 'Relationships' do
-    it { should have_many(:addresses) }
-    it { should have_many(:subscriptions) }
+  describe 'associations' do
+    it { should have_many(:addresses).dependent(:destroy) }
+    it { should have_many(:subscriptions).dependent(:destroy) }
   end
 end
