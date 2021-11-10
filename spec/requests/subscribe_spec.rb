@@ -7,7 +7,7 @@ RSpec.describe "subscribe endpoint" do
       last_name: "Last",
       email: "test@test.com"
     )
-    @address_1 = Address.create!(
+    @address_1 = @customer_1.addresses.create!(
       type_of: "shipping",
       address_1: "1000 Awesome Pl",
       address_2: "1",
