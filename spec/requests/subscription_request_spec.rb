@@ -30,7 +30,7 @@ RSpec.describe "subscribe endpoint" do
     )
   end
 
-  describe "subscribe a customer to a tea subscription" do
+  describe "POST" do
     it "creates a customer tea subscription" do
       body = {
           subscription: {
@@ -75,9 +75,80 @@ RSpec.describe "subscribe endpoint" do
     end
   end
 
-  it "cancels a customer's tea subscription" do
-    patch "/api/v1/subscriptions/#{@subscription_1.id}", params: body, as: :json
+  describe "PATCH" do
+    it "can cancel a customer's tea subscription" do
+      body = {
+          subscription: {
+            status: 'cancelled'
+          }
+      }
 
-    expect(response).to be_successful
+      patch "/api/v1/subscriptions/#{@subscription_1.id}", params: body, as: :json
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+      subscription_info = JSON.parse(response.body, symbolize_names: true)
+
+      expect(subscription_info).to have_key(:data)
+      expect(subscription_info[:data]).to be_a(Hash)
+      expect(subscription_info[:data].keys.count).to eq(3)
+      expect(subscription_info[:data]).to have_key(:id)
+      expect(subscription_info[:data][:id]).to be_a(String)
+      expect(subscription_info[:data]).to have_key(:type)
+      expect(subscription_info[:data][:type]).to eq("subscription")
+      expect(subscription_info[:data]).to have_key(:attributes)
+      expect(subscription_info[:data][:attributes]).to be_a(Hash)
+      expect(subscription_info[:data][:attributes].keys.count).to eq(7)
+      expect(subscription_info[:data][:attributes]).to have_key(:price)
+      expect(subscription_info[:data][:attributes][:price]).to be_an(Integer)
+      expect(subscription_info[:data][:attributes]).to have_key(:status)
+      expect(subscription_info[:data][:attributes][:status]).to eq('cancelled')
+      expect(subscription_info[:data][:attributes]).to have_key(:frequency)
+      expect(subscription_info[:data][:attributes][:frequency]).to be_an(Integer)
+      expect(subscription_info[:data][:attributes]).to have_key(:ounces)
+      expect(subscription_info[:data][:attributes][:ounces]).to be_an(Integer)
+      expect(subscription_info[:data][:attributes]).to have_key(:customer_id)
+      expect(subscription_info[:data][:attributes][:customer_id]).to eq(@customer_1.id)
+      expect(subscription_info[:data][:attributes]).to have_key(:tea_id)
+      expect(subscription_info[:data][:attributes][:tea_id]).to eq(@tea_1.id)
+      expect(subscription_info[:data][:attributes]).to have_key(:address_id)
+      expect(subscription_info[:data][:attributes][:address_id]).to eq(@address_1.id)
+    end
+
+    it 'returns an error if the status does not change' do
+      @subscription_1.cancelled!
+
+      body = {
+          subscription: {
+            status: 'cancelled'
+          }
+      }
+
+      patch "/api/v1/subscriptions/#{@subscription_1.id}", params: body, as: :json
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(400)
+      subscription_info = JSON.parse(response.body, symbolize_names: true)
+
+      expect(subscription_info).to have_key(:error)
+      expect(subscription_info[:error]).to eq('This subscription currently has the requested status. No change made.')
+    end
+
+    it 'returns an error if the subscription does not exist' do
+      body = {
+          subscription: {
+            status: 'cancelled'
+          }
+      }
+
+      patch "/api/v1/subscriptions/30000", params: body, as: :json
+
+      expect(response).to_not be_successful
+      expect(response.status).to eq(404)
+      subscription_info = JSON.parse(response.body, symbolize_names: true)
+
+      expect(subscription_info).to have_key(:error)
+      expect(subscription_info[:error]).to eq('The subscription does not exist')
+    end
   end
 end
