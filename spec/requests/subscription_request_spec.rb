@@ -22,6 +22,12 @@ RSpec.describe "subscribe endpoint" do
       brew_time: 120,
       price_oz: 400
     )
+    @subscription_1 = @customer_1.subscriptions.create!(
+      frequency: 30,
+      ounces: 2,
+      tea_id: @tea_1.id,
+      address_id: @address_1.id
+    )
   end
 
   describe "subscribe a customer to a tea subscription" do
@@ -67,5 +73,11 @@ RSpec.describe "subscribe endpoint" do
       expect(subscription_info[:data][:attributes]).to have_key(:address_id)
       expect(subscription_info[:data][:attributes][:address_id]).to eq(@address_1.id)
     end
+  end
+
+  it "cancels a customer's tea subscription" do
+    patch "/api/v1/subscriptions/#{@subscription_1.id}", params: body, as: :json
+
+    expect(response).to be_successful
   end
 end
