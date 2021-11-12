@@ -72,3 +72,61 @@ Status: 200 OK
 
 ```
 ---
+
+<br>
+
+## PATCH subscriptions
+
+Edit an existing tea subscription
+
+```
+PATCH /api/v1/subscriptions/:id
+```
+
+### Parameters
+
+Name            | Data Type | In    | Required/Optional    | Description
+----------------|---------|-------|----------------------|------------
+`subscription_id`   | Integer | uri | Required | The ID of the subscription
+
+Notes:
+-
+
+### Example Request
+
+```
+PATCH http://localhost:3000/api/v1/subscriptions/1
+```
+
+### Example Body
+```
+{
+    "status": "cancelled"
+}
+```
+
+### Example Response
+
+```
+Status: 200 OK
+```
+
+```
+{
+    "data": {
+        "id": "1",
+        "type": "subscription",
+        "attributes": {
+            "status": "cancelled",
+            "frequency": 30,
+            "ounces": 2,
+            "customer_id": 1,
+            "tea_id": 1,
+            "address_id": 1,
+            "price": 800
+        }
+    }
+}
+
+```
+---
