@@ -26,6 +26,8 @@ POST /api/v1/subscriptions
 Name            | Data Type | In    | Required/Optional    | Description
 ----------------|---------|-------|----------------------|------------
 `customer_id`   | Integer | body | Required | The ID of the customer
+`tea_id`   | Integer | body | Required | The ID of the tea
+`address_id`   | Integer | body | Required | The ID of the shipping address
 
 Notes:
 -
