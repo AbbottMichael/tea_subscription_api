@@ -34,13 +34,14 @@
 
 ## Endpoints
 
-The following table presents each API endpoint and its documentation.
+[Click here](endpoint_doc.md) for detailed documentation about each endpoint.
 
 
 HTTP Verb | Endpoint              | Description                              | 
 ----------|-----------------------|------------------------------------------|
-POST       | `/api/v1/subscriptions` | Create a new customer tea subscription | 
-
+POST       | `/api/v1/subscriptions` | Create a new customer tea subscription |
+PATCH       | `/api/v1/subscriptions` | Edit an existing tea subscription |
+GET       | `/api/v1/subscriptions` | Get all of a customer's subscriptions | 
 
 ------
 
